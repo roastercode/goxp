@@ -1,6 +1,7 @@
 /*
 
 GOXP - go experimentation
+local environment
 
 */
 
