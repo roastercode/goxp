@@ -58,3 +58,47 @@ func (m *Goxp) Use(handler Handler) {
 
 	m.handler = append(m.handlers, handler)
 }
+
+// ServerHTTP is the HTTP Entry point for a Goxp instance. Useful if you want to control your own HTTP server.
+func (m *Goxp) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	m.createContext(res, req).run()
+}
+
+// Run the http server on a given host and port.
+func (m *Goxp) RunOnAddr(addr string) {
+	// TODO: Should probably be implemented using a new instance of http Server in place of
+	// calling http.ListenAndServer directly, so that it could be stored in a goxp struct for later user
+
+	// This would also allow to improve testing when a custom host and port are passed.
+
+	logger := m.Injector.Get(reflect.TypeOf(m.logger)).Interface().(*log.Logger)
+	logger.Printf("listening on %s (%s)\n", addr, Env)
+	logger.Fatalln(http.ListenAndServe(addr, m))
+}
+
+// Run the http server. Listening on os.GetEnv("PORT") or 3000 by default.
+func (m *Goxp) Run() {
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "3000"
+	}
+
+	host := os.Getenv("HOST")
+
+	m.RunOnAddr(host + ":" + port)
+}
+
+func (m *Goxp) createContext(res http.ResponseWriter, req *http.Request) *context {
+	c := &context{inject.New(), m.handlers, m.action, NewResponseWriter(res), 0}
+	c.SetParent(m)
+	c.MapTo(c, (*Context)(nil))
+	c.MapTo(c.rw, (*http.ResponseWriter)(nil))
+	c.Map(req)
+	return c
+}
+
+// ClassicGoxp represents a Goxp with some reasonable defaults. Embeds the router functions for convenience.
+type ClassicGoxp struct {
+	*Goxp
+	Router
+}
