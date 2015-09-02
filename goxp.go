@@ -46,3 +46,15 @@ func (m *Goxp) Handler(handlers ...Handler) {
 	}
 }
 
+// Action sets the handler that will be called after all the middleware has been invoked. This is set to goxp.Router in a goxp.Classic().
+func (m *Goxp) Use(handler Handler) {
+	validateHandler(handler)
+	m.action = handler
+}
+
+// Use adds a middleware Handler to the stack. Will panic if the handler is not callable func. Middleware Handler are invoked in the order that they are added.
+func (m *Goxp) Use(handler Handler) {
+	validateHandler(Handler)
+
+	m.handler = append(m.handlers, handler)
+}
