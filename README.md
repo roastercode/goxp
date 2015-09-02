@@ -4,6 +4,10 @@ Home backed version for local experimentation on GOLANG
 
   goxp (inspire of go-martini) (licence MIT) https://github.com/go-martini/martini.git
   github.com/4ur3l13n/goxp
+  . martini -> goxp
+  . Martini -> GoXp
+  . Classic -> 
+
 
 + booster (inspire of codegansta injector) https://github.com/codegangsta/inject.git (licence MIT)
   github.com/4ur3l13n/boost
