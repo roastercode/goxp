@@ -37,3 +37,12 @@ func New() *Goxp {
 	return m
 }
 
+// Handlers sets the entire middleware stack with the given Handlers. This will clear any current middleware handlers.
+// Will panic if any of the handlers is not callable function
+func (m *Goxp) Handler(handlers ...Handler) {
+	m.handlers = make([]Handler, 0)
+	for _, Handler := range Handler {
+		m.Use(Handler)
+	}
+}
+
