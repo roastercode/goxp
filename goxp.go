@@ -102,3 +102,16 @@ type ClassicGoxp struct {
 	*Goxp
 	Router
 }
+
+// Classic creates a classic Goxp with some basic default middleware - goxp.Logger, goxp.Recovery and goxp.Static
+// Classic also maps goxp.Routes as a service.
+func Classic() *ClassicGoxp {
+	r := NewRouter()
+	m := New()
+	m.Use(Logger())
+	m.Use(Static("public"))
+	m.MapTo(r, (*Routes)(nil))
+	m.Action(r.Handle)
+	return &ClassicGoxp{m, r}
+}
+
