@@ -10,7 +10,7 @@ That give GoXp - Go eXperimentatioeXperimentations.
 
   . Martini -> GoXp
 
-  . Classic -> Sub (it is composed of subsection, like sub-directories of the software.)
+  . Classic -> Sub (it is composed of subsection, like sub-directories of the package. Ex: http://golang.org/pkg/net/ )
 
 
 + booster (inspire of codegansta injector) https://github.com/codegangsta/inject.git (licence MIT)
