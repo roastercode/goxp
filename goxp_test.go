@@ -28,3 +28,30 @@ import (
 )
 
 /* Test Helpers */
+func expect(t *testing.T, a interface{}, b interface{}) {
+	if a != b {
+		t.Errorf("Expected %v (type %v) - Got %v (type %v)", b, reflect.TypeOf(b), a, reflect.TypeOf(a))
+	}
+}
+
+func refute(t *testing.T, a interface{}, b interface{}) {
+	if a == b {
+		t.Error("Did not expect %v (type %v) - Got %v (type %v)", b, reflect.TypeOf(b), a, reflect.TypeOf(a))
+	}
+}
+
+func Test_New(t *testing.T) {
+	g := New()
+	if g == nil {
+		t.Error("goxp.New() cannot return nil")
+	}
+}
+
+func Test_GoXp_RunOnAddr(t *testing.T) {
+	// just test that Run doesn't bomb
+	go New().RunOnAddr("127.0.0.1:8080")
+}
+
+fucn Test_GoXp_Run(t *testing.T) {
+	go.New().Run()
+}
