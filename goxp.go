@@ -147,3 +147,12 @@ type Context struct {
 	index   int
 }
 
+func (c *context) handler() Handler {
+	if c.index < len(c.handlers) {
+		return c.handlers[c.index]
+	}
+	if c.index == len(c.handlers) {
+		return c.action
+	}
+	panic("invalid index for context handler")
+}
