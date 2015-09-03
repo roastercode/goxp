@@ -117,3 +117,33 @@ func Sub() *SubGoxp {
 	return &SubGoxp{m, r}
 }
 
+// Handler can be any callable function. Goxp attemps to boost services into the handler's argument list.
+// Goxp will panic if an argument could not be fullfilled via dependency booster.
+// Here we will use inject.Injector but we hope to replace it soon by boost.Booster which sounds better :-)
+type Handler interface{}
+
+func validateHandler(handler Handler) {
+	if reflect.TypeOf(handler).Kind() != reflect.Func {
+		panic("goxp handler must be a callable func")
+	}
+}
+
+// Contect represents a request context. Service can be mapped on the request level from this interface.
+type Context interface {
+	inject.Injector
+	// Next is an optional function that Middleware Handlers can call to yield the until after
+	// the other Handlers have been executed. This works really well for any operations that must
+	// happen after an http request
+	Next()
+	// Written returns whether or not the response for this context has been written.
+	Written() bool
+}
+
+type Context struct {
+	inject.Injector
+	handler []Handler
+	action  Handler
+	rw      ResponseWriter
+	index   int
+}
+
