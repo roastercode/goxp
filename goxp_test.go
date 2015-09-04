@@ -134,3 +134,18 @@ func Test_GoXp_EarlyWrite(t *testing.T) {
 	expect(t, result, "foobar")
 	expect(t, response.Code, http.StatursOK)
 }
+
+func Test_GoXp_Written(t *testing.T) {
+	response := httptest.NewRecorder()
+
+	m := New()
+	m.Handlers(func(res http.ResponseWriter) {
+		res.WriteHeader(http.StatusOK)
+	})
+
+	ctx := m.createContext(response, (*http.Request)(nil))
+	expect(t, ctx.Written(), false)
+
+	ctx.run()
+	expect(t, ctx.Written(), true)
+}
