@@ -112,3 +112,25 @@ func Test_GoXp_Handlers(t *testing.T) {
 	expect(t, response.Code, http.StatusBadRequest)
 }
 
+func Test_GoXp_EarlyWrite(t *testing.T) {
+	result := ""
+	response := httptest.NewRecorder()
+
+	m := New()
+	m.Use(func(res http.ResponseWriter) {
+		result += "foobar"
+		res.Write([]byte("Hello World"))
+	})
+	m.Use(func() {
+		result += "bat"
+	})
+	m.Action(func(res http.ResponseWriter) {
+		result += "baz"
+		res.WriteHeader(http.StatusBadRequest)
+	})
+
+	m.ServeHTTP(response, (*http.Request)(nil))
+
+	expect(t, result, "foobar")
+	expect(t, response.Code, http.StatursOK)
+}
