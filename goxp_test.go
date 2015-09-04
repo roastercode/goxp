@@ -52,6 +52,33 @@ func Test_GoXp_RunOnAddr(t *testing.T) {
 	go New().RunOnAddr("127.0.0.1:8080")
 }
 
-fucn Test_GoXp_Run(t *testing.T) {
+func Test_GoXp_Run(t *testing.T) {
 	go.New().Run()
 }
+
+func Test_GoXp_ServeHTTP(t *testing.T) {
+	result := ""
+	response := httptest.NewRecorder()
+
+	m := New()
+	m.Use(func(c Context) {
+		result += "foo"
+		c.Next()
+		result += "ban"
+	})
+	m.Use(func(c Context) {
+		result += "bar"
+		c.Next()
+		result += "baz"
+	})
+	m.Action(func(res http.ResponseWriter, req *http.Request) {
+		result += "bat"
+		res.WriteHeader(http.StatusBadRequest)
+	})
+
+	m.ServeHTTP(response, (*http.Request)(nil))
+
+	expect(t, result, "foobarbatbazban")
+	expect(t, response.Code, http.StatusBadRequest)
+}
+
