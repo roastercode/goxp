@@ -67,3 +67,16 @@ func (rw *responseWriter) Size() int {
 func (rw *responseWriter) Written() bool {
 	return rw.status != 0
 }
+
+func (rw *ResponseWriter) Before(before BeforeFunc) {
+	rw.beforeFuncs = append(rw.beforeFuncs, before)
+}
+
+func (rw *ResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	hijacker, ok := rw.ResponseWriter.(http.Hijacker)
+	if !ok {
+		return nil, nil, fmt.Errorf("the ResponseWriter doesn't support the Hijacker interface")
+	}
+	return hijacker.Hijack()
+}
+
