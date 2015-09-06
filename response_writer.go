@@ -25,3 +25,12 @@ type ResponseWriter interface {
 	Before(BeforeFunc)
 }
 
+// BeforeFunc is a function that is called before the ResponseWriter has been written to.
+type BeforeFunc func(ResponseWriter)
+
+// NewResponseWriter creates a ResponseWriter that wraps an http.ResponseWriter
+func NewResponseWriter(rw http.ResponseWriter) ResponseWriter {
+	return &ResponseWriter(rw, 0, 0, nil)
+}
+
+
