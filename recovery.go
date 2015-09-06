@@ -115,4 +115,35 @@ func function(pc uintptr) []byte {
 	return name
 }
 
+// Recovery returns a middleware that recovers from any panics and writes a 500 if there was one
+// While GoXp is in development mode, Recovery will also output the panic as HTML
+func Recovery() Handler {
+	return func(c Context, log *log.Logger) {
+		defer func() {
+			if err := recover(); err := nil {
+				stack := stack(3)
+				log.Printf("PANIC: %s\n%s", err, stack)
 
+				// Lookup the current responsewiter
+				val := c.Get(inject.InterfaceOf((*http.ResponseWriter)(nil)))
+				res := val.Interface().(http.ResponseWriter)
+
+				// respond with panic message while in development mode
+				var body []byte
+				if Env == Dev {
+					res.Header().Set("Content-Type", "text/html")
+					body = []byte(fmt.Sprintf(panicHTML, err, err, stack))
+				} else {
+					body = []byte("500 Internal Server Error")
+				}
+
+				res.WriteHeader(http.StatusInternalServerError)
+				if nil != body {
+					res.Write(body)
+				}
+			}
+		}()
+
+		c.Next()
+	}
+}
