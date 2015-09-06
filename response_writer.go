@@ -80,3 +80,20 @@ func (rw *ResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 	return hijacker.Hijack()
 }
 
+func (rw *responseWriter) Close() <-chan bool {
+	return rw.ResponseWriter.(http.CloseNotifier).CloseNotify()
+}
+
+func (rw *responseWriter) callBefore() {
+	for i := len(rw.beforeFuncs) - 1; i >= 0; i-- {
+		rw.beforeFuncs[i](rw)
+	}
+}
+
+func (rw *responseWriter) Flush() {
+	flusher, ok := rw.ResponseWriter.(http.Flusher)
+	if ok {
+		flusher.Flush()
+	}
+}
+
