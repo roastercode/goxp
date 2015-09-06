@@ -124,7 +124,7 @@ func Recovery() Handler {
 				stack := stack(3)
 				log.Printf("PANIC: %s\n%s", err, stack)
 
-				// Lookup the current responsewiter
+				// Lookup the current responseWriter
 				val := c.Get(inject.InterfaceOf((*http.ResponseWriter)(nil)))
 				res := val.Interface().(http.ResponseWriter)
 
