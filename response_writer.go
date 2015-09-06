@@ -30,7 +30,13 @@ type BeforeFunc func(ResponseWriter)
 
 // NewResponseWriter creates a ResponseWriter that wraps an http.ResponseWriter
 func NewResponseWriter(rw http.ResponseWriter) ResponseWriter {
-	return &ResponseWriter(rw, 0, 0, nil)
+	return &ResponseWriter{rw, 0, 0, nil}
 }
 
+type responseWriter struct {
+	http.ResponseWriter
+	status      int
+	size        int
+	BeforeFunc  []BeforeFunc
+}
 
