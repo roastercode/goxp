@@ -81,3 +81,13 @@ func stack(skip int) []byte {
 	return buf.Bytes()
 }
 
+//source returns a space-trimmed slice of the n'th line
+func source(lines [][]byte, n int) []byte {
+	n-- // in stack trace, lines are 1-indexed but our array is 0-indexed
+	if n < 0 || n >= len(lines) {
+		return dunno
+	}
+	return bytes.TrimSpace(lines[n])
+}
+
+// function returns, if possible, the name of the function containing the PC.
