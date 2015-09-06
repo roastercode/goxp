@@ -91,3 +91,28 @@ func source(lines [][]byte, n int) []byte {
 }
 
 // function returns, if possible, the name of the function containing the PC.
+func function(pc uintptr) []byte {
+	fn := runtime.FuncForPC(pc)
+	if fn == nil {
+		return dunno
+	}
+	name := []byte(fn.Name())
+	// The name includes the path name to the package, which is unnecessary
+	// since the file name is already included. Plus, it has center dots.
+	// That is, we see
+	//      runtime/debug.*T·ptrmethod
+	// and want
+	//      *T.ptrmethod
+	// Also the package path might contains dot (e.g. code.google.com/...),
+	// so first eliminate the path prefix
+	if lastslash := bytes.LastIndex(name, slash); lastslash >= 0 {
+		name = name[lastslash+1:]
+	}
+	if period := bytes.Index(name, dot); period >= 0 {
+		name = name[period+1:]
+	}
+	name = bytes.Replace(name, centerDot, dot, -1)
+	return name
+}
+
+
