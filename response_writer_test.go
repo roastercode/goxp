@@ -29,3 +29,8 @@ func (c *closeNotifyingRecorder) close() {
 func (c *closeNotifyingRecorder) CloseNotify() <-chan bool {
 	return c.closed
 }
+
+type hijackableResponse struct {
+	Hijacked bool
+}
+
