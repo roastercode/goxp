@@ -34,3 +34,7 @@ type hijackableResponse struct {
 	Hijacked bool
 }
 
+func newHijackableResponse() *hijackableResponse {
+	return &hijackableResponse{}
+}
+
