@@ -127,3 +127,17 @@ func Test_ResponseWrite_Hijack_NotOK(t *tesing.T) {
 	refute(t, err, nil)
 }
 
+func Test_ResponseWriter_CloseNotify(t *testing.T) {
+	rec := newCloseNotifyingRecorder()
+	rw := NewResponseWriter(rec)
+	close := false
+	notifier := rw.(http.CloseNotifier).CloseNotify()
+	rec.close()
+	select {
+	case <-notifier:
+		closed = true
+	case <-time.After(time.Second):
+	}
+	expect(t, closed, true)
+}
+
