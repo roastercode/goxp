@@ -150,3 +150,37 @@ func Test_ResponseWriter_Flusher(t *testing.T) {
 	expect(t, ok, true)
 }
 
+func Test_ResponseWriter_FlusherHandler(t *testing.T) {
+
+	// New goxp instance
+	m := Classic()
+
+	m.Get("/events", func(w http.ResponseWriter, r *http.Request) {
+
+		f, ok := w.(http.Flusher)
+		expect(t, ok, true)
+
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+
+		for i := 0; i < 2; i++ {
+			time.Sleep(10 * time.Millisecond)
+			io.WriteString(w, "data: Hello\n\n")
+			f.Flush()
+		}
+	})
+
+	recorder := httptest.NewRecorder()
+	r, _ := http.NewRequest("GET", "/events", nil)
+	m.ServerHTTP(recorder, r)
+
+	if recorder.Code != 200 {
+		t.Error("Response not 200")
+	}
+
+	if recorder.Body.String() != "data: Hello\n\ndata: Hello\n\n" {
+		t.Error("Didn't receive correct body, got:", recorder.Body.String())
+	}
+}
+
