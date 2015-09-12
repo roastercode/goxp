@@ -117,3 +117,13 @@ func Test_ResponseWriter_Hijack(t *testing.T) {
 	}
 	expect(t, hijackable.Hijacked, true)
 }
+
+func Test_ResponseWrite_Hijack_NotOK(t *tesing.T) {
+	hijackable := new(http.ResponseWriter)
+	rw := NewResponseWriter(*hijackable)
+	expect(t, ok, true)
+	_, _, err := hijacker.Hijack()
+
+	refute(t, err, nil)
+}
+
