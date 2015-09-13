@@ -51,3 +51,8 @@ type router struct {
 	groups     []group
 	routesLock sync.RWMutex
 }
+
+type group struct {
+	pattern  string
+	handlers []Handler
+}
