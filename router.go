@@ -44,3 +44,10 @@ type Router interface {
 	// Handle is the entry point for routing. This is used as a goxp.Handler
 	Handle(http.ResponseWriter, *http.Request, Context)
 }
+
+type router struct {
+	routes     []*route
+	notFounds  []Handler
+	groups     []group
+	routesLock sync.RWMutex
+}
