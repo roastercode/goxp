@@ -56,3 +56,17 @@ type group struct {
 	pattern  string
 	handlers []Handler
 }
+
+// NewRouter creates a new Router instance.
+// If you aren't using ClassicGoXp, then you can add Routes as a
+// service with:
+//
+//     m := goxp.New()
+//     r := goxp.NewRouter()
+//     m.MapTo(r, (*goxp.Routes)(nil))
+//
+// If you are using ClassicGoXp, then this is done for you.
+func NewRouter() Router {
+	return &router{notFounds: []Handler{http.NotFound}, groups: make([]group, 0)}
+}
+
