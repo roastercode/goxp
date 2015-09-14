@@ -95,3 +95,7 @@ func (r *router) Put(pattern string, h ...Handler) Router {
 func (r *router) Delete(pattern string, h ...Handler) Route {
 	return r.addRoute("DELETE", pattern, h)
 }
+
+func (r *router) Options(pattern string, h ...Handler) Route {
+	return r.addRoute("OPTIONS", pattern, h)
+}
