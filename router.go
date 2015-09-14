@@ -21,7 +21,7 @@ type Router interface {
 	Group(string, func(Router), ...Handler)
 	// Get adds a route for a HTTP GET request to the specified mathcing pattern.
 	Get(string, ...Handler) Route
-	// Patch adds a route for a HTTP PATCH request to the specified matching patten.
+	// Patch adds a route for a HTTP PATCH request to the specified matching pattern.
 	Patch(string, ...Handler) Route
 	// Post adds a route for a HTTP POST request to the specified matching pattern.
 	Post(string, ...Handler) Route
@@ -78,5 +78,9 @@ func (r *router) Group(pattern string, fn func(Router), h ...Handler) {
 
 func (r *router) Get(pattern string, h ...Handler) Route {
 	return r.addRoute("GET", pattern, h)
+}
+
+func (r *router) Patch(patter string, h ...Handler) Route {
+	return r.addRoute("PATCH", pattern, h)
 }
 
