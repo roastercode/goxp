@@ -88,3 +88,7 @@ func (r *router) Post(pattern string, h ...Handler) Router {
 	return r.addRoute("POST", pattern, h)
 }
 
+func (r *router) Put(pattern string, h ...Handler) Router {
+	return r.addRoute("PUT", pattern, h)
+}
+
