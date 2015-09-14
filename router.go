@@ -92,3 +92,6 @@ func (r *router) Put(pattern string, h ...Handler) Router {
 	return r.addRoute("PUT", pattern, h)
 }
 
+func (r *router) Delete(pattern string, h ...Handler) Route {
+	return r.addRoute("DELETE", pattern, h)
+}
