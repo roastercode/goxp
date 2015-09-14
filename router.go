@@ -70,3 +70,13 @@ func NewRouter() Router {
 	return &router{notFounds: []Handler{http.NotFound}, groups: make([]group, 0)}
 }
 
+func (r *router) Group(pattern string, fn func(Router), h ...Handler) {
+	r.groups = append(r.groups, group{pattern, h})
+	fn(r)
+	r.groups = r.groups[:len(r.groups)-1]
+}
+
+func (r *router) Get(pattern string, h ...Handler) Route {
+	return r.addRoute("GET", pattern, h)
+}
+
