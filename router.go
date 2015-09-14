@@ -80,7 +80,11 @@ func (r *router) Get(pattern string, h ...Handler) Route {
 	return r.addRoute("GET", pattern, h)
 }
 
-func (r *router) Patch(patter string, h ...Handler) Route {
+func (r *router) Patch(pattern string, h ...Handler) Route {
 	return r.addRoute("PATCH", pattern, h)
+}
+
+func (r *router) Post(pattern string, h ...Handler) Router {
+	return r.addRoute("POST", pattern, h)
 }
 
