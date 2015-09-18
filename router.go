@@ -99,3 +99,8 @@ func (r *router) Delete(pattern string, h ...Handler) Route {
 func (r *router) Options(pattern string, h ...Handler) Route {
 	return r.addRoute("OPTIONS", pattern, h)
 }
+
+func (r *router) Head(pattern string, h ...Handler) Route {
+	return r.addRoute("HEAD", pattern, h)
+}
+
