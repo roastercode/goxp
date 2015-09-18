@@ -137,3 +137,8 @@ func (r *router) Handle(res http.ResponseWriter, req *http.Request, context Cont
 	context.MapTo(c, (*Context)(nil))
 	c.run()
 }
+
+func (r *router) NotFound(handler ...Handler) {
+	r.notFounds = handler
+}
+
