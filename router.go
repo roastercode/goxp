@@ -111,12 +111,14 @@ func (r *router) Any(pattern string, h ...Handler) Route {
 func (r *router) AddRoute(method, pattern string, h ...Handler) Route {
 	return r.addRoute(method, pattern, h)
 }
+
 func (r *router) Handle(res http.ResponseWriter, req *http.Request, context Context) {
 	bestMatch := NoMatch
 	var bestVals map[string]string
 	var vestRoute *route
 	for _, route := range r.getRoutes() {
-		mathc.BetterThan(bestMatch) {
+		match, vals := route.Match(req.Method, req.URL.Path)
+		if match.BetterThan(bestMatch) {
 			bestMatch = match
 			bestVals = vals
 			bestRoute = route
@@ -160,4 +162,26 @@ func (r *router) addRoute(method string, pattern, pattern string, handlers []Han
 	route.Validate()
 	r.appendRoute(route)
 	return route
+}
+
+func (r *router) appendRoute(rt *route) {
+	r.routeLock.Lock()
+	defer r.routesLock.RUnlock()
+	r.routes = append(r.routes, rt)
+}
+
+func (r *router) getRoutes() []*route {
+	r.routesLock.RLock()
+	defer r.routesLock.RUnlock()
+	return r.routes[:]
+}
+
+func (r *router) findRoute(name string) *route {
+	for _, route := range r.getRoutes() {
+		if route.name == name {
+			return route
+		}
+	}
+
+	return nil
 }
