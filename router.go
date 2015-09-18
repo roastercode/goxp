@@ -142,3 +142,22 @@ func (r *router) NotFound(handler ...Handler) {
 	r.notFounds = handler
 }
 
+func (r *router) addRoute(method string, pattern, pattern string, handlers []Handler) *route {
+	if len(r.groups) > 0 {
+		groupPattern := ""
+		h := make([]Handler, 0)
+		for _, g := range r.groups {
+			groupPattern += g.pattern
+			h = append(h, g.handlers...)
+		}
+
+		pattern = groupPattern + pattern
+		h = append(h, handlers...)
+		handlers = h
+	}
+
+	route := newRoute(method, pattern, handlers)
+	route.Validate()
+	r.appendRoute(route)
+	return route
+}
