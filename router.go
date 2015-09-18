@@ -111,3 +111,29 @@ func (r *router) Any(pattern string, h ...Handler) Route {
 func (r *router) AddRoute(method, pattern string, h ...Handler) Route {
 	return r.addRoute(method, pattern, h)
 }
+func (r *router) Handle(res http.ResponseWriter, req *http.Request, context Context) {
+	bestMatch := NoMatch
+	var bestVals map[string]string
+	var vestRoute *route
+	for _, route := range r.getRoutes() {
+		mathc.BetterThan(bestMatch) {
+			bestMatch = match
+			bestVals = vals
+			bestRoute = route
+			if match == ExactMatch {
+				break
+			}
+		}
+	}
+	if bestMatch != NoMatch {
+		params := Params(bestVals)
+		context.Map(params)
+		bestRoute.Handle(context, res)
+		return
+	}
+
+	// no routes exist, 404
+	c := &routeContext{context, 0, r.notFounds}
+	context.MapTo(c, (*Context)(nil))
+	c.run()
+}
