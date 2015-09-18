@@ -104,3 +104,10 @@ func (r *router) Head(pattern string, h ...Handler) Route {
 	return r.addRoute("HEAD", pattern, h)
 }
 
+func (r *router) Any(pattern string, h ...Handler) Route {
+	return r.addRoute("*", pattern, h)
+}
+
+func (r *router) AddRoute(method, pattern string, h ...Handler) Route {
+	return r.addRoute(method, pattern, h)
+}
