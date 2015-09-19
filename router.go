@@ -188,7 +188,9 @@ func (r *router) findRoute(name string) *route {
 
 // Route is an interface representing a Route in GoXp's routing layer.
 type Route interface {
-	// URLWith returns a rendering of the Routes's url with the given string params.
+	// URLWith returns a rendering of the Routes's url with the given string params
+	URLWith([]string) string
+	// Name sets a name for the route.
 	Name(string)
 	// GetName returns the name of the route.
 	GetName() string
@@ -204,5 +206,23 @@ type route struct {
 	handlers []Handler
 	pattern  string
 	name     string
+}
+
+var routeReg1 = regexp.MustCompile(`:[^/#?()\,\\]+`)
+var routeReg2 = regexp.MustCompile(`\*\*`)
+
+func newRoute(method string, pattern string, handlers []Handler) *route {
+	route := route{method, nil, handler, pattern, ""}
+	pattern = routeReg1.ReplaceAllStringFunc(pattern, func(m string) string {
+		return fmt.Sprintf(`(?P<%s>[*/#?]+)`, m[1:])
+	})
+	var index int
+	pattern = routeReg2.ReplaceAllStringFunc(pattern, func(m string) string {
+		index++
+		return fmt.Sprintf(`(?P<_%d>[^#?]*)`, index)
+	})
+	pattern += `\/?`
+	route.regex = regexp.MustCompile(pattern)
+	return &route
 }
 
