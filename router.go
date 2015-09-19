@@ -198,3 +198,11 @@ type Route interface {
 	Method() string
 }
 
+type route struct {
+	method   string
+	regex    *regex.Regexp
+	handlers []Handler
+	pattern  string
+	name     string
+}
+
