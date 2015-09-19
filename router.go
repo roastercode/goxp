@@ -185,3 +185,16 @@ func (r *router) findRoute(name string) *route {
 
 	return nil
 }
+
+// Route is an interface representing a Route in GoXp's routing layer.
+type Route interface {
+	// URLWith returns a rendering of the Routes's url with the given string params.
+	Name(string)
+	// GetName returns the name of the route.
+	GetName() string
+	// Pattern returns the pattern of the route.
+	Pattern() string
+	// Method returns the method of the route.
+	Method() string
+}
+
