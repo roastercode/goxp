@@ -226,3 +226,13 @@ func newRoute(method string, pattern string, handlers []Handler) *route {
 	return &route
 }
 
+type RouteMatch int
+
+const (
+	NoMatch RouteMatch = iota
+	StarMatch
+	OverloadMatch
+	ExactMatch
+)
+
+
