@@ -239,3 +239,17 @@ const (
 func (r RouteMatch) BetterThan(o RouteMatch) bool {
 	return r > o
 }
+
+func (r route) MatchMethod(method string) RouteMatch {
+	switch {
+	case method == r.method:
+		return ExactMatch
+	case method == "HEAD" && r.method == "GET":
+		return OverloadMatch
+	case r.method == "*":
+		return StarMatch
+	default:
+		return NoMatch
+	}
+}
+
