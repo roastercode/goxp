@@ -253,6 +253,7 @@ func (r route) MatchMethod(method string) RouteMatch {
 	}
 }
 
+
 func (r route) Match(method string, path string) (RouteMatch, map[string]string) {
 	// add Any method matching support
 	match := r.MatchMethod(method)
@@ -284,4 +285,27 @@ func (r *route) Handle(c Context, res http.ResponseWriter) {
 	c.MapTo(context, (*Context)(nil))
 	c.MapTo(r, (*Route)(nil))
 	context.run()
+}
+
+var urlReg = regexp.MustCompile(`:[^/#?()\.\\]+|\(\?P<[a-zA-Z0-9]+>.*\)`)
+
+// URLWith returns the url pattern replacing the parameters for its values
+func (r *route) URLWith(args []string) string {
+	if len(args) > 0 {
+		argCount := len(args)
+		i := 0
+		url := urlReg.ReplaceAllStringFunc(r.pattern, func(m string) string {
+			var val interface{}
+			if i < argCount {
+				val = args[i]
+			} else {
+				val = m
+			}
+			i += 1
+			return fmt.Sprintf(`%v`, val)
+		})
+
+		return url
+	}
+	return r.pattern
 }
