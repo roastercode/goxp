@@ -272,3 +272,9 @@ func (r route) Match(method string, path string) (RouteMatch, map[string]string)
 	}
 	return NoMatch, nil
 }
+
+func (r *route) Validate() {
+	for _, handler := range r.handlers {
+		validateHandler(handler)
+	}
+}
