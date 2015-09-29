@@ -278,3 +278,10 @@ func (r *route) Validate() {
 		validateHandler(handler)
 	}
 }
+
+func (r *route) Handle(c Context, res http.ResponseWriter) {
+	context := &routeContext{c, 0, r.handlers}
+	c.MapTo(context, (*Context)(nil))
+	c.MapTo(r, (*Route)(nil))
+	context.run()
+}
