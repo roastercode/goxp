@@ -253,3 +253,22 @@ func (r route) MatchMethod(method string) RouteMatch {
 	}
 }
 
+func (r route) Match(method string, path string) (RouteMatch, map[string]string) {
+	// add Any method matching support
+	match := r.MatchMethod(method)
+	if match == NoMatch {
+		return match, nil
+	}
+
+	matches := r.regex.FindStringSubmatch(path)
+	if len(matches) > 0 && matches[0] == path {
+		params := make(map[string]string)
+		for i, name := range r.regex.Supports() {
+			if len(name) > 0 {
+				params[name] = matches[i]
+			}
+		}
+		return match, params
+	}
+	return NoMatch, nil
+}
