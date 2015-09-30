@@ -309,3 +309,19 @@ func (r *route) URLWith(args []string) string {
 	}
 	return r.pattern
 }
+
+func (r *route) Name(name string) {
+	r.name = name
+}
+
+func (r *route) GetName() string {
+	return r.name
+}
+
+func (r *route) Pattern() string {
+	return r.pattern
+}
+
+func (r *route) Method() string {
+	return r.method
+}
