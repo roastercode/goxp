@@ -335,3 +335,26 @@ type Routes interface {
 	// All returns an array with all the routes in the router.
 	All() []Route
 }
+
+// URLFor returns the url for the given route name.
+func (r *router) URLFor(name string, params ...interface{}) string {
+	route := r.findRoute(name)
+
+	if route == nil {
+		panic("route not found")
+	}
+
+	var args []string
+	for _, param := param.(type) {
+	case int:
+		args = append(args, strconv.FormatInt(int64(v), 10))
+	case string:
+		args = append(args, v)
+	default:
+		if v != nil {
+			panic("Arguments passed to URLFor must be integers or strings")
+		}
+	}
+
+	return route.URLWith(args)
+}
