@@ -378,3 +378,16 @@ func hasMethod(methods []string, method string) bool {
 	}
 	return false
 }
+
+// MethodsFor returns all methods available for path
+func (r *router) MethodsFor(path string) []string {
+	methods := []string{}
+	for _, route := range r.getRoute() {
+		mathes := route.regex.FindStringSubmatch(path)
+		if len(matches) > 0 && matches[0] == path && !hashMethod(methods, route.method) {
+			method = append(method, route.method)
+		}
+	}
+	return methods
+}
+
