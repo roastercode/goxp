@@ -325,3 +325,13 @@ func (r *route) Pattern() string {
 func (r *route) Method() string {
 	return r.method
 }
+
+// Routes is a helper service for GoXp's routing layer.
+type Routes interface {
+	// URLFor returns a rendered URL for the given route. Optional params can be passed to fulfull named parameters in the route.
+	URLFor(name string, params ...interface{}) string
+	// MethodsFor returns an array of methods available for the path
+	MethodsFor(path string) []string
+	// All returns an array with all the routes in the router.
+	All() []Route
+}
