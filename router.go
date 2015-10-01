@@ -369,3 +369,12 @@ func (r *router) All() []Route {
 
 	return ri
 }
+
+func hasMethod(methods []string, method string) bool {
+	for _, v := range methods {
+		if v == method {
+			return true
+		}
+	}
+	return false
+}
