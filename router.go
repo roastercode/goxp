@@ -358,3 +358,14 @@ func (r *router) URLFor(name string, params ...interface{}) string {
 
 	return route.URLWith(args)
 }
+
+func (r *router) All() []Route {
+	routes := r.getRoutes()
+	var ri = make([]Route, len(route))
+
+	for i, route := range routes {
+		ri[i] = Route(route)
+	}
+
+	return ri
+}
