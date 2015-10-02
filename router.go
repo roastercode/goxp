@@ -391,3 +391,9 @@ func (r *router) MethodsFor(path string) []string {
 	return methods
 }
 
+
+type routeContext struct {
+	Context
+	index		 int
+	handlers []Handler
+}
