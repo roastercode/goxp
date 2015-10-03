@@ -12,8 +12,7 @@ import (
 // Params is a map of name/value pairs for named routes. An instance of goxp.Params is available to be injected into any route handler.
 type Params map[string]string
 
-// Router is GoXp's de-facto interface. Supports HTTP verbs, stacked handlers, and dependency injection
-// Idea is to use booster rather than injection
+// Router is GoXp's de-facto interface. Supports HTTP verbs, stacked handlers, and dependency injection Idea is to use booster rather than injection
 type Router interface {
 	Routes
 
@@ -253,7 +252,6 @@ func (r route) MatchMethod(method string) RouteMatch {
 	}
 }
 
-
 func (r route) Match(method string, path string) (RouteMatch, map[string]string) {
 	// add Any method matching support
 	match := r.MatchMethod(method)
@@ -391,9 +389,35 @@ func (r *router) MethodsFor(path string) []string {
 	return methods
 }
 
-
 type routeContext struct {
 	Context
 	index		 int
 	handlers []Handler
+}
+
+func (r *routeContext) Next() {
+	r.index += 1
+	r.run()
+}
+
+func (r *routeContext) run() {
+	for r.index < len(r.handlers) {
+		handler := r.handlers[r.index]
+		vals, err := r.Invoke(handler)
+		if err != nil {
+			panic(err)
+		}
+		r.index += 1
+
+		// if the handler returned something, write it to http response
+		if len(vals) > 0 {
+			ev := r.Get(reflect.TypeOf(ReturnHandler(nil)))
+			handleReturn := ev.Interface().(ReturnHandler)
+			handleReturn(r, vals)
+		}
+
+		if r.Written() {
+			return
+		}
+	}
 }
