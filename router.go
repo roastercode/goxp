@@ -343,14 +343,16 @@ func (r *router) URLFor(name string, params ...interface{}) string {
 	}
 
 	var args []string
-	for _, param := param.(type) {
-	case int:
-		args = append(args, strconv.FormatInt(int64(v), 10))
-	case string:
-		args = append(args, v)
-	default:
-		if v != nil {
-			panic("Arguments passed to URLFor must be integers or strings")
+	for _, param := range params {
+		switch v := param.(type) {
+		case int:
+			args = append(args, strconv.FormatInt(int64(v), 10))
+		case string:
+			args = append(args, v)
+		default:
+			if v != nil {
+				panic("Arguments passed to URLFor must be integers or strings")
+			}
 		}
 	}
 
@@ -391,7 +393,7 @@ func (r *router) MethodsFor(path string) []string {
 
 type routeContext struct {
 	Context
-	index		 int
+	index    int
 	handlers []Handler
 }
 
