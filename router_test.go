@@ -26,4 +26,7 @@ context4 := New().createContext(recorder, req4)
 req5, _ := http.NewRequest("GET", "http://localhost:3000/theory/and/practice", nil)
 context5 := New().createContext(recorder, req5)
 
+req6, _ := http.NewRequest("PUT", "http://localhost:3000/liquid/ice/", nil)
+context6 := New().createContext(recorder, req6)
+
 }
