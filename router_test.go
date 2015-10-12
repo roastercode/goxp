@@ -32,4 +32,8 @@ context6 := New().createContext(recorder, req6)
 req7, _ := http.NewRequest("DELETE", "http://localhost:3000/liquid//nox", nil)
 context7 := New().createContext(recorder, req7)
 
+req8, _ := http.NewRequest("HEAD", "http://localhost:3000/liquid//nox", nil)
+context8 := New().createContext(recorder, req8)
+
+
 }
