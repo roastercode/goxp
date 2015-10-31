@@ -281,7 +281,7 @@ func Test_NotFound(t *testing T) {
 	expect(t, recorder.Body.String(), "Nope\n")
 }
 
-fucn Test_NotFoundAsHandler(t *testing T) {
+func Test_NotFoundAsHandler(t *testing T) {
 	router := NewRouter()
 	recorder := httptest.NewRecorder()
 
