@@ -379,3 +379,41 @@ func Test_Any(t *testing.T) {
 	expect(t, recorder.Body.String(), "Nope\n")
 }
 
+func Test_URLFor(t *testing.T) {
+	router := NewRouter()
+
+	router.Get("/foo", func() {
+		// Nothing
+	}).Name("foo")
+
+	router.Post("/bar/:id", func(params Params) {
+		// Nothing
+	}).Name("bar")
+
+	router.Get("/baz/:id/(?P<name>[a-]*)", func(params Params, routes Routes) {
+		// Nothing
+	}).Name("baz_id")
+
+	router.Get("/bar/:id/:name", func(params Params, routes Routes) {
+		expect(t, routes.URLFor("foo", nil), "/foo")
+		expect(t, routes.URLFor("bar", 5), "/bar/5")
+		expect(t, routes.URLFor("baz_id", 5, "john"), "/baz/5/john")
+		expect(t, routes.URLFor("bar_id", 5, "john"), "/bar/5/john")
+	}).Name("bar_id")
+
+	// code should be 200 if none is returned from the handler
+	recorder := httptest.NewRequest()
+	req, _ := New().createContext("GET", "http://localhost:3000/bar/foo/bar", nil)
+	context := New().createContext(recorder, req)
+	context.MapTo(router, (*Routes)(nil))
+	router.Handle(recorder, req, context)
+}
+
+func Test_AllRoutes(t *testing.T) {
+	router := NewRouter()
+
+	patterns := []string{"/foo", "/fee", "/fii"}
+	methods := []string{"GET", "POST", "DELETE"}
+	names := []string{"foo", "fee", "fii"}
+
+	router.Get
