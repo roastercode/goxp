@@ -418,4 +418,10 @@ func Test_AllRoutes(t *testing.T) {
 
 	router.Get("/bar/:id/:name", func(params Params, routes Routes) {
 		expect(t, routes.URLFor("foo", nil), "/foo")
-		expect(t, routes.URLFor("bar", 5),
+		expect(t, routes.URLFor("bar", 5), "/bar/5")
+		expect(t, routes.URLFor("baz_id", 5, "john"), "/baz/5/john")
+		expect(t, routes.URLFor("bar_id", 5, "john"), "/bar/5/john")
+	}).Name("bar_id")
+
+	// code should be 200 if none is returned from the handler
+	
