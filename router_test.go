@@ -424,4 +424,10 @@ func Test_AllRoutes(t *testing.T) {
 	}).Name("bar_id")
 
 	// code should be 200 if none is returned from the handler
-	
+	recorder := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:3000/bar/foo/bar", nil)
+	context := New().createContext(recorder, req)
+	context.MapTo(router, (*Routes)(nil))
+	router.Handle(recorder, req, context)
+}
+
