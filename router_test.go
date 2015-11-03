@@ -416,4 +416,6 @@ func Test_AllRoutes(t *testing.T) {
 	methods := []string{"GET", "POST", "DELETE"}
 	names := []string{"foo", "fee", "fii"}
 
-	router.Get
+	router.Get("/bar/:id/:name", func(params Params, routes Routes) {
+		expect(t, routes.URLFor("foo", nil), "/foo")
+		expect(t, routes.URLFor("bar", 5),
