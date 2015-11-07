@@ -148,7 +148,10 @@ func Test_RouterHandlerStatusCode(t *testing.T) {
 		return "baz", "BAZ!"
 	})
 	router.Get("/bytes", func() []byte {
-		return "Interfaces!"
+		return []byte("Bytes!")
+	})
+	router.Get("/interface", func() interface{} {
+		return "Interface!"
 	})
 
 	// code should be 200 if none is returned from the handler
@@ -213,8 +216,13 @@ func Test_RouterHandlerStacking(t *testing.T) {
 
 	f3 := func() string {
 		result += "bat"
+		return "Wow it just works fine!"
 	}
 
+	f4 := func() {
+		result += "baz"
+	}
+	
 	router.Get("/foo", f1, f2, f3, f4)
 
 	router.Handle(recorderd, req, context)
@@ -260,6 +268,23 @@ func Test_MethodsFor(t *testing.T) {
 	context.MapTo(router, (*Routes)(nil))
 	router.Post("/foo/bar", func() {
 	}}
+
+	router.Post("/fo", func() {
+	})
+
+	router.Get("/foo", func() {
+	})
+
+	router.Put("/foo", func() {
+	})
+
+	router.NotFound(func(routes Routes, w http.ResponseWriter, r *http.Request) {
+		methods := routes.MethodsFor(r.URL.Path)
+		if len(methods) != 0 {
+			w.Header().Set("Allow", strings.Join(methods, ","))
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
 	router.Handle(recorder, req, context)
 	expect(t, recorder.Code, http.StatusMethodNotAllowed)
 	expect(t, recorder.Header().Get("Allow"), "GET,PUT")
@@ -416,4 +441,29 @@ func Test_AllRoutes(t *testing.T) {
 	methods := []string{"GET", "POST", "DELETE"}
 	names := []string{"foo", "fee", "fii"}
 
-	router.Get
+	router.Get("/foo", func() {}).Name("foo")
+	router.Post("/fee", func() {}).Name("fee")
+	router.Delete("/fii", func() {}).Name("fii")
+
+	for i, r := range router.All() {
+		expect(t, r.Pattern(), patterns[i])
+		expect(t, r.Methodes(), methods[i])
+		expect(t, r.GetName(), names[i])
+	}
+}
+
+func Test_AllRoutes(t *testing.T) {
+	router := NewRouter()
+
+	router.Get("/foo", func(r Route) {
+		expect(t, r.Pattern(), "/foo")
+		expect(t, r.Pattern(), "foo")
+	}).Name("foo")
+
+	// code should be 200 if none is returned from the handler
+	recorder := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:3000/foo", nil)
+	context := New().createContext(recorder, req)
+	context.MapTo(router, (*Routes)(nil))
+	router.Handle(recorder, req, context)
+}
