@@ -34,3 +34,17 @@ func prepareStaticOptions(options []StaticOptions) StaticOptions {
 	}
 
 	// Defaults
+	if len(opt.IndexFile) == 0 {
+		opt.IndexFile = "index.html"
+	}
+	// Normalize the prefix if provided
+	if opt.Prefix != "" {
+		// Ensure we have a leading '/'
+		if opt.Prefix[0] != '/' {
+			opt.Prefix = "/" + opt.Prefix
+		}
+		// Remove any trailing '/'
+		opt.Prefix = strings.TrimRight(opt.Prefix, "/")
+	}
+	return opt
+}
