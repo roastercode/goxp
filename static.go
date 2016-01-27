@@ -1,4 +1,4 @@
-ackage goxp
+package goxp
 
 import (
 	"log"
