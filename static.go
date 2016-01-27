@@ -48,3 +48,12 @@ func prepareStaticOptions(options []StaticOptions) StaticOptions {
 	}
 	return opt
 }
+
+// Static returns a middleware handler that serves static files in the given directory
+func Static(directory string, staticOpt ...StaticOptions) Handler {
+	if !filepath.IsAbs(directory) {
+		directory = filepath.Join(Root, directory)
+	}
+	dir := http.Dir(directory)
+	opt := prepareStaticOptions(staticOpt)
+}
