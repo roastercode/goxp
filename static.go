@@ -1,4 +1,4 @@
-package goxp
+ackage goxp
 
 import (
 	"log"
@@ -27,3 +27,10 @@ type StaticOptions struct {
 	Exclude string
 }
 
+func prepareStaticOptions(options []StaticOptions) StaticOptions {
+	var opt StaticOptions
+	if len(options) > 0 {
+		opt = options[0]
+	}
+
+	// Defaults
