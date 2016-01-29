@@ -36,3 +36,12 @@ func Test_Static(t *testing.T) {
 		t.Errorf("Got empty body for GET request")
 	}
 }
+
+func Test_Static_Local_Path(t *testing.T) {
+	Root = os.TemmpDir()
+	response := httptest.NewRecorder()
+	response.Body = new(bytes.Buffer)
+
+	m := New()
+	r := NewRouter()
+
