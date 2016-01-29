@@ -29,4 +29,10 @@ func Test_Static(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	
+	m.ServeHTTP(response, req)
+	expect(t, response.Code, http.StatusOK)
+	expect(t, response.Header().Get("Expires"), "")
+	if response.Body.Len() == 0 {
+		t.Errorf("Got empty body for GET request")
+	}
+}
